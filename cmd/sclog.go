@@ -31,7 +31,7 @@ Use a full or relative path when specifying a file.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		logger.SetupLogfile()
 		if checkArgs(args) != true {
-			logger.Disklog.Warn("Exiting")
+			logger.Disklog.Debug("Exiting")
 			os.Exit(1)
 		}
 		fmt.Println("sclog called.  Looking for", args[0])

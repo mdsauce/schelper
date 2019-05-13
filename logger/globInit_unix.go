@@ -15,7 +15,7 @@ var Disklog = log.New()
 
 // SetupLogfile will attempt to create a logfile if one does not exist
 func SetupLogfile() {
-	logfile := "/tmp/logfile"
+	logfile := "/tmp/schelper.log"
 	Disklog.SetFormatter(&log.TextFormatter{})
 	Disklog.SetLevel(log.DebugLevel)
 	Disklog.Out = os.Stdout
