@@ -18,6 +18,8 @@ func ReadLog(sclog string) {
 	scanner := bufio.NewScanner(fp)
 	for scanner.Scan() {
 		line := scanner.Bytes()
-		logger.Disklog.Info(line)
+		if isProblem, problem := problem(line); isProblem == true {
+			singleOutput(problem, line)
+		}
 	}
 }
