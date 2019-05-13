@@ -15,9 +15,9 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 
+	"github.com/mdsauce/schelper/helper"
 	"github.com/mdsauce/schelper/logger"
 	"github.com/spf13/cobra"
 )
@@ -34,7 +34,9 @@ Use a full or relative path when specifying a file.`,
 			logger.Disklog.Debug("Exiting")
 			os.Exit(1)
 		}
-		fmt.Println("sclog called.  Looking for", args[0])
+		helper.ReadLog(args[0])
+		logger.Disklog.Debug("Program done.  Exiting")
+		os.Exit(0)
 	},
 }
 
@@ -55,6 +57,10 @@ func init() {
 func checkArgs(args []string) bool {
 	if len(args) < 1 {
 		logger.Disklog.Warn("Not enough arguments, no SC logfile specified")
+		return false
+	}
+	if _, err := os.Stat(args[0]); err != nil {
+		logger.Disklog.Warnf("Failed to find sclog %s", args[0])
 		return false
 	}
 	return true
