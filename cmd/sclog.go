@@ -17,6 +17,7 @@ package cmd
 import (
 	"os"
 
+	"github.com/mdsauce/schelper/helper"
 	"github.com/mdsauce/schelper/logger"
 	"github.com/spf13/cobra"
 )
@@ -33,7 +34,9 @@ Use a full or relative path when specifying a file.`,
 			logger.Disklog.Debug("Exiting")
 			os.Exit(1)
 		}
-
+		helper.ReadLog(args[0])
+		logger.Disklog.Debug("Program done.  Exiting")
+		os.Exit(0)
 	},
 }
 
