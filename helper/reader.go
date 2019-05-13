@@ -18,6 +18,6 @@ func ReadLog(sclog string) {
 	scanner := bufio.NewScanner(fp)
 	for scanner.Scan() {
 		line := scanner.Bytes()
-		logger.Disklog.Info(line)
+		logger.Disklog.Infof("Match for Known Problem %s", string(line))
 	}
 }
