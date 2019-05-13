@@ -19,7 +19,7 @@ func ReadLog(sclog string) {
 	for scanner.Scan() {
 		line := scanner.Bytes()
 		if isProblem, problem := problem(line); isProblem == true {
-			logger.Disklog.Infof("String %s is match for Known Problem %s \n ", string(line), problem.Name)
+			singleOutput(problem, line)
 		}
 	}
 }
