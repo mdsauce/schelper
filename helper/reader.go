@@ -16,10 +16,18 @@ func ReadLog(sclog string) {
 		return
 	}
 	scanner := bufio.NewScanner(fp)
+	meta := make(map[string]int)
 	for scanner.Scan() {
 		line := scanner.Bytes()
 		if isProblem, problem := problem(line); isProblem == true {
-			singleOutput(problem, line)
+			_, present := meta[problem.Name]
+			if present {
+				meta[problem.Name] = meta[problem.Name] + 1
+			} else {
+				singleOutput(problem, line)
+				meta[problem.Name] = meta[problem.Name] + 1
+			}
 		}
 	}
+	metaOutput(meta)
 }

@@ -20,3 +20,11 @@ General Steps for this type of Disruption:
 
 `, prob.Disruption.Category, logline, prob.NextSteps, prob.Disruption.GeneralSteps)
 }
+
+func metaOutput(metadata map[string]int) {
+	fmt.Printf("\nMetadata of All Problems Encountered\n")
+	fmt.Printf("------------------------------------\n")
+	for key, val := range metadata {
+		logger.Disklog.Infof("%s: %d", key, val)
+	}
+}
