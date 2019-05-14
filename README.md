@@ -42,4 +42,4 @@ var <name of problem> = KnownProblem{Name: "name-of-problem-w-hyphens", Disrupti
 // Append your problem to []AllProblems (slice, like an array)
 AllProblems = append(AllProblems, <name of problem>)
 ```
-
+Add a Test to `comparison_test.go` if you want to be sure it works as intended.  Same format for every test.
