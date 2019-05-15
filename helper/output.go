@@ -22,9 +22,23 @@ General Steps for this type of Disruption:
 }
 
 func metaOutput(metadata map[string]int) {
-	fmt.Printf("\nMetadata of All Problems Encountered\n")
-	fmt.Printf("------------------------------------\n")
+	logger.Disklog.Info("Metadata of All Problems Encountered")
+	logger.Disklog.Info("------------------------------------")
 	for key, val := range metadata {
 		logger.Disklog.Infof("%s: %d", key, val)
+	}
+}
+
+func lifecycleOutput(cycle [6]scLifecycle) {
+	logger.Disklog.Info("Sauce Connect Lifecycle")
+	logger.Disklog.Info("------------------------------------")
+	for i := range cycle {
+		if cycle[i].reached {
+			logger.Disklog.Infof("%s reached", cycle[i].stage)
+			logger.Disklog.Infof("-------------------------------------------")
+		} else {
+			logger.Disklog.Infof("%s *never* reached", cycle[i].stage)
+			logger.Disklog.Infof("<----------------->")
+		}
 	}
 }
