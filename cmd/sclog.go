@@ -34,7 +34,12 @@ Use a full or relative path when specifying a file.`,
 			logger.Disklog.Debug("Exiting")
 			os.Exit(1)
 		}
-		helper.ReadLog(args[0])
+		verbose, err := cmd.Flags().GetBool("verbose")
+		if err != nil {
+			logger.Disklog.Warn("Problem retrieving verbosity flag", err)
+		}
+
+		helper.ReadLog(args[0], verbose)
 		logger.Disklog.Debug("Program done.  Exiting")
 		os.Exit(0)
 	},
@@ -51,7 +56,8 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// sclogCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	sclogCmd.Flags().BoolP("verbose", "v", false, "Output ALL problems, even if redundant")
+
 }
 
 func checkArgs(args []string) bool {

@@ -15,7 +15,7 @@ type scLifecycle struct {
 
 // ReadLog will read line by line and
 // analyze the strings as bytes
-func ReadLog(sclog string) {
+func ReadLog(sclog string, verbose bool) {
 	fp, err := os.Open(sclog)
 	if err != nil {
 		logger.Disklog.Warnf("Could not open file %s", sclog)
@@ -30,6 +30,9 @@ func ReadLog(sclog string) {
 			_, present := meta[problem.Name]
 			if present {
 				meta[problem.Name] = meta[problem.Name] + 1
+				if verbose {
+					singleOutput(problem, line)
+				}
 			} else {
 				singleOutput(problem, line)
 				meta[problem.Name] = meta[problem.Name] + 1
