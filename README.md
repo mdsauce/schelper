@@ -1,9 +1,16 @@
 # SCHelper
 Feed in a Sauce Connect Proxy log, get back general info and next steps to troubleshoot any problems. -v, -vv, or zero verbosity, doesn't matter.  More data is better in general though.  
 
-### Starting
+## Usage Guide
 `$ schelper sclog ~/absolute/or/relative/path/to/sc.log`
 
+`$ schelper -h` or `--help` to get more info about your options and default settings.
+`$ schelper sclog -h` or `--help` to get more info about specifying the SC log.
+
+Add a `-v` or `--verbose` flag to stop suppression of redundant output.  May be messy.
+
+## Contributing
+If you wish to send pull requests adding more "known problems" that I missed read below.
 
 ### Adding Disruptions
 A `Disruption` is currently 
