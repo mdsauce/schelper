@@ -10,6 +10,7 @@ import (
 type scLifecycle struct {
 	stage   string
 	reached bool
+	target  string
 	line    []byte
 }
 
@@ -69,12 +70,24 @@ func ReadLog(sclog string, verbose bool) {
 
 func setupLifecycle() [6]scLifecycle {
 	var lifecycle [6]scLifecycle
-	lifecycle[0].stage = "Client Attempted to Start"
-	lifecycle[1].stage = "Client Started"
-	lifecycle[2].stage = "Client Attempted to Connect to Maki"
-	lifecycle[3].stage = "Sauce Connect Tunnel Started"
-	lifecycle[4].stage = "Sauce Connect Tunnel Closed"
+	lifecycle[0].stage = "Client attempted to start"
+	lifecycle[0].target = "connecting to Sauce Labs REST API"
+
+	lifecycle[1].stage = "Client started"
+	lifecycle[1].target = "Started scproxy on port"
+
+	lifecycle[2].stage = "Client attempted to connect to Maki"
+	lifecycle[2].target = "connecting to tunnel VM"
+
+	lifecycle[3].stage = "Sauce Connect Tunnel started"
+	lifecycle[3].target = "Sauce Connect is up, you may start your tests."
+
+	lifecycle[4].stage = "Client stopping attempts to reach Maki."
+	lifecycle[4].target = "Connection closed"
+
 	lifecycle[5].stage = "Client Shutdown"
+	lifecycle[5].target = "Goodbye."
+
 	for i := range lifecycle {
 		lifecycle[i].reached = false
 	}

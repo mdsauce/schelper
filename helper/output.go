@@ -8,7 +8,7 @@ import (
 
 func singleOutput(prob KnownProblem, logline []byte) {
 	fmt.Printf("=======PROBLEM=======\n")
-	logger.Disklog.Infof(`Problem Category: %s
+	logger.Disklog.Infof(`Problem: %s
 
 Where: %s
 
@@ -18,7 +18,7 @@ Suggested Next Steps:
 General Steps for this type of Disruption: 
 %s
 
-`, prob.Disruption.Category, logline, prob.NextSteps, prob.Disruption.GeneralSteps)
+`, prob.Name, logline, prob.NextSteps, prob.Disruption.GeneralSteps)
 }
 
 func metaOutput(metadata map[string]int) {
@@ -36,10 +36,10 @@ func lifecycleOutput(cycle [6]scLifecycle) {
 	for i := range cycle {
 		if cycle[i].reached {
 			logger.Disklog.Infof("%s", cycle[i].stage)
-			logger.Disklog.Infof("-------------------------------------------")
 		} else {
-			logger.Disklog.Infof("%s *never* reached", cycle[i].stage)
-			logger.Disklog.Infof("<--------------------------------------->")
+			logger.Disklog.Infof("==%s not found==", cycle[i].stage)
 		}
+		logger.Disklog.Debugf("Looking for: '%s'", cycle[i].target)
+		fmt.Println()
 	}
 }

@@ -2,6 +2,7 @@ package helper
 
 import (
 	"bytes"
+	// "fmt"
 )
 
 func problem(logline []byte) (bool, KnownProblem) {
@@ -15,6 +16,7 @@ func problem(logline []byte) (bool, KnownProblem) {
 		if bytes.Contains(problem.Logs, core) {
 			return true, problem
 		}
+		// fmt.Println(string(problem.Logs), " does not contain\n", string(core))
 	}
 	return false, KnownProblem{}
 }
@@ -26,7 +28,7 @@ func clientStarting(logline []byte) bool {
 	splitline := bytes.Split(logline, []byte(" "))
 	// start at (include) 3rd element in slice
 	core := bytes.Join(splitline[3:], []byte(" "))
-	if bytes.Contains([]byte("Using no proxy for connecting to Sauce Labs REST API."), core) {
+	if bytes.Contains(core, []byte("connecting to Sauce Labs REST API")) {
 		return true
 	}
 	return false
@@ -53,7 +55,7 @@ func connectingToMaki(logline []byte) bool {
 	splitline := bytes.Split(logline, []byte(" "))
 	// start at (include) 3rd element in slice
 	core := bytes.Join(splitline[3:], []byte(" "))
-	if bytes.Contains([]byte("Using no proxy for connecting to tunnel VM."), core) {
+	if bytes.Contains(core, []byte("connecting to tunnel VM")) {
 		return true
 	}
 	return false
@@ -66,7 +68,7 @@ func scUp(logline []byte) bool {
 	splitline := bytes.Split(logline, []byte(" "))
 	// start at (include) 3rd element in slice
 	core := bytes.Join(splitline[3:], []byte(" "))
-	if bytes.Contains([]byte("Sauce Connect is up, you may start your tests."), core) {
+	if bytes.Contains(core, []byte("Sauce Connect is up, you may start your tests.")) {
 		return true
 	}
 	return false
