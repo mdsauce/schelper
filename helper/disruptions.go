@@ -13,4 +13,4 @@ var localDNS = Disruption{Category: "Intranet DNS", GeneralSteps: "Find IP Addre
 
 var kgpConnection = Disruption{Category: "KGP Maki Connection", GeneralSteps: "Ensure the tunnel can stay up for at least 24 hours via Looker.", Info: "This should only happen briefly, ideally never, except at the end of a tunnel's lifecycle. If it happens repeatedly there is a proble connecting the SC Client to the Maki Tunnel VM."}
 
-var sslTLS = Disruption{Category: "SSL/TLS Certificate", GeneralSteps: "Constult past tickets.  Usually its a problem with a Man-in-the-middle type proxy removing our SSL/TLS certificate.", Info: "SSL/TLS problems occur when HTTPS is used by either the SC Proxy or by the customer to connect to their SUT."}
+var sslTLS = Disruption{Category: "SSL/TLS Certificate", GeneralSteps: "Consult past tickets.  Usually its a problem with a Man-in-the-middle type proxy removing our SSL/TLS certificate.", Info: "SSL/TLS problems occur when HTTPS is used by either the SC Proxy or by the customer to connect to their SUT."}
