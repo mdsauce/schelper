@@ -1,0 +1,11 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.12.5
+    working_directory: /go/schelper
+    steps:
+      - checkout
+      - run: pwd && ls
+      - run: go install
+      - run: schelper --help

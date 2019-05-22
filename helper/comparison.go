@@ -13,12 +13,46 @@ func problem(logline []byte) (bool, KnownProblem) {
 		splitline := bytes.Split(logline, []byte(" "))
 		// start at (include) 3rd element in slice
 		core := bytes.Join(splitline[3:], []byte(" "))
-		if bytes.Contains(problem.Logs, core) {
+
+		headerTest := make(chan bool)
+		generalTest := make(chan bool)
+		go headerMatch(splitline[3:], problem.Logs, headerTest)
+		go nonUniqueMatch(splitline[3:], problem.Logs, generalTest)
+		headerFound := <-headerTest
+		generalFound := <-generalTest
+
+		if bytes.Contains(problem.Logs, core) || headerFound || generalFound {
 			return true, problem
 		}
 		// fmt.Println(string(problem.Logs), " does not contain\n", string(core))
 	}
 	return false, KnownProblem{}
+}
+
+func headerMatch(logline [][]byte, problem []byte, found chan bool) {
+	if len(logline) >= 3 {
+		header := bytes.Join(logline[:3], []byte(" "))
+
+		if bytes.Contains(problem, header) {
+			found <- true
+		}
+	}
+
+	found <- false
+}
+
+func nonUniqueMatch(logline [][]byte, problem []byte, found chan bool) {
+	for i := 0; i < len(logline)/2; i++ {
+		final := len(logline) - i
+		general := bytes.Join(logline[:final], []byte(" "))
+		// fmt.Println("is", string(general), "==", string(problem))
+		if bytes.Contains(problem, general) {
+			found <- true
+			return
+		}
+	}
+
+	found <- false
 }
 
 func clientStarting(logline []byte) bool {

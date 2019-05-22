@@ -44,5 +44,16 @@ Telnet as well if you want to cover all bases: telnet maki86032.miso.saucelabs.c
 All of these steps are just to ensure a request can leave the private network without being blocked or filtered.`}
 	AllProblems = append(AllProblems, sockMakiErr)
 
+	var noKeepalive = KnownProblem{Name: "No-Keepalive", Logs: []byte("KGP warning: no keepalive ack KGP warning: no keepalive ack for 8s"), NextSteps: `A keepalive is necessary to keep the tunnel open.  You should NOT be seeing this message.  Once or twice in the logs is OK but not great.  Repeated Keepalive misses can end up killing the tunnel and is usually indicative of major networking problems.  Run these sumo queries to learn more.  
+
+Any results are bad basically.  You want the sumo search to return 0.
+_sourceName="/var/local/mount/maki1234/rw/var/log/upstart/gravina.log" 
+_sourceName="/var/local/mount/makiNumberHere/rw/var/log/upstart/gravina.log" LIVE
+_sourceName="/var/local/mount/makiNumberHere/rw/var/log/upstart/gravina.log" DEAD`}
+	AllProblems = append(AllProblems, noKeepalive)
+
+	var noNameProvidedDNS = KnownProblem{Name: "Nodename-nor-servename-DNS-Error", Logs: []byte("MAIN DNS error: nodename nor servname provided, or not known (-908)"), NextSteps: "The hostname on one of the lines above this couldn't be resolved. Usually its a maki subdomain and the local DNS servers aren't allowed to resolve the maki saucelabs.com subdomain.  Try using a tool like Dig from the Sauce Connect host machine to resolve the offending domain name."}
+	AllProblems = append(AllProblems, noNameProvidedDNS)
+
 	return AllProblems
 }

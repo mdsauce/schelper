@@ -1,4 +1,5 @@
 # SCHelper
+[![CircleCI](https://circleci.com/gh/mdsauce/schelper/tree/master.svg?style=svg)](https://circleci.com/gh/mdsauce/schelper/tree/master)
 Feed in a Sauce Connect Proxy log, get back general info and next steps to troubleshoot any problems. -v, -vv, or zero verbosity, doesn't matter.  More data is better in general though.  
 
 ## Usage Guide
@@ -26,7 +27,10 @@ type Disruption struct {
 Go to `disruptions.go` and add a new local variable to the package with this format.  Disruptions should be general like what an organ is to a body.
 
 ```
-var <local name of disruption> = Disruption{Category: "Overarching category.  Avoid conflicts as much as you can.", GeneralSteps: "In general, what should you do when you see this Category of problem?", Info: "The WHY? of this category.  What's going on?  Any background info?  Anything important or useful?"}
+var <local name of disruption> = Disruption{
+	Category: "Overarching category.  Avoid conflicts as much as you can.", 
+	GeneralSteps: "In general, what should you do when you see this Category of problem?", 
+	Info: "The WHY? of this category.  What's going on?  Any background info?  Anything important or useful?"}
 
 ```
 
