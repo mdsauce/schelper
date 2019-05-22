@@ -8,4 +8,5 @@ jobs:
       - checkout
       - run: pwd && ls
       - run: go install
+      - run: go test ./...
       - run: schelper --help
