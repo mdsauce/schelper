@@ -1,5 +1,6 @@
 # SCHelper
 [![CircleCI](https://circleci.com/gh/mdsauce/schelper/tree/master.svg?style=svg)](https://circleci.com/gh/mdsauce/schelper/tree/master)
+
 Feed in a Sauce Connect Proxy log, get back general info and next steps to troubleshoot any problems. -v, -vv, or zero verbosity, doesn't matter.  More data is better in general though.  
 
 ## Usage Guide
