@@ -3,6 +3,13 @@
 
 Feed in a Sauce Connect Proxy log, get back general info and next steps to troubleshoot any problems. -v, -vv, or zero verbosity, doesn't matter.  More data is better in general though.  
 
+## Installation
+1. `brew tap mdsauce/schelper https://github.com/mdsauce/schelper`
+2. `brew install schelper`
+Using Homebrew run the above two commands.  Should take about thirty seconds if you have Homebrew installed.
+
+If you don't have Homebrew or a Mac then `go get mdsauce/schelper` should work.  Cloning/forking the repo then doing a `go build` or `go install` will also work as long as you have golang installed.
+
 ## Usage Guide
 `$ schelper sclog ~/absolute/or/relative/path/to/sc.log`
 
