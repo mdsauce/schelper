@@ -2,7 +2,6 @@ package helper
 
 import (
 	"bytes"
-	// "fmt"
 )
 
 func problem(logline []byte) (bool, KnownProblem) {
@@ -24,7 +23,6 @@ func problem(logline []byte) (bool, KnownProblem) {
 		if bytes.Contains(problem.Logs, core) || headerFound || generalFound {
 			return true, problem
 		}
-		// fmt.Println(string(problem.Logs), " does not contain\n", string(core))
 	}
 	return false, KnownProblem{}
 }
@@ -45,7 +43,6 @@ func nonUniqueMatch(logline [][]byte, problem []byte, found chan bool) {
 	for i := 0; i < len(logline)/2; i++ {
 		final := len(logline) - i
 		general := bytes.Join(logline[:final], []byte(" "))
-		// fmt.Println("is", string(general), "==", string(problem))
 		if bytes.Contains(problem, general) {
 			found <- true
 			return
