@@ -22,7 +22,7 @@ Add a `-v` or `--verbose` flag to stop suppression of redundant output.  May be 
 If you wish to send pull requests adding more "known problems" that I missed read below.
 
 ### Adding Disruptions
-A `Disruption` is currently 
+A `Disruption` is currently
 
 ```
 type Disruption struct {
