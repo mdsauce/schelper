@@ -9,14 +9,25 @@ type KnownProblem struct {
 	NextSteps  string
 }
 
+// AllProbs is all known problems
+var AllProbs []KnownProblem
+
 // AllProblems returns all known problems
 func AllProblems() []KnownProblem {
 	var AllProblems []KnownProblem
-	var dnsResolution = KnownProblem{Name: "DNS-Resolution", Disruption: localDNS, Logs: []byte("MAIN DNS error: non-recoverable failure in name resolution (4) MAIN DNS error: EVUTIL_EAI_FAIL MAIN DNS error"), NextSteps: `1) Locate the DNS servers that were used from the SC logs
+	var dnsResolution = KnownProblem{
+		Name:       "DNS-Resolution",
+		Disruption: localDNS,
+		Logs:       []byte("MAIN DNS error: non-recoverable failure in name resolution (4) MAIN DNS error: EVUTIL_EAI_FAIL MAIN DNS error"),
+		NextSteps: `1) Locate the DNS servers that were used from the SC logs
 2) See what domain name was attempting to be resolved.  Should be a 'connecting' message prior to DNS failure`}
 	AllProblems = append(AllProblems, dnsResolution)
 
-	var earlyDisconnect = KnownProblem{Name: "Early-Disconnect", Disruption: kgpConnection, Logs: []byte("KGP libevent connection error MAIN loop exited, return code: 5 MAIN main loop exited, return code: 5 "), NextSteps: `
+	var earlyDisconnect = KnownProblem{
+		Name:       "Early-Disconnect",
+		Disruption: kgpConnection,
+		Logs:       []byte("KGP libevent connection error MAIN loop exited, return code: 5 MAIN main loop exited, return code: 5 "),
+		NextSteps: `
 Confirm this only happens one time, at the end of the log after the Stop signal, CTRL-C (SIGINT), is sent.  If this happens during any other time there is potential for a bad connection or a Maki that has problems maintain a connection to a client.
 
 This could be the customer network having problems maintaining the TCP tunnel or problems with the Keep Alive signal.  Look for any DEAD or LIVE signals in Sumo.`}
@@ -44,7 +55,10 @@ Telnet as well if you want to cover all bases: telnet maki86032.miso.saucelabs.c
 All of these steps are just to ensure a request can leave the private network without being blocked or filtered.`}
 	AllProblems = append(AllProblems, sockMakiErr)
 
-	var noKeepalive = KnownProblem{Name: "No-Keepalive", Logs: []byte("KGP warning: no keepalive ack KGP warning: no keepalive ack for 8s"), NextSteps: `A keepalive is necessary to keep the tunnel open.  You should NOT be seeing this message.  Once or twice in the logs is OK but not great.  Repeated Keepalive misses can end up killing the tunnel and is usually indicative of major networking problems.  Run these sumo queries to learn more.  
+	var noKeepalive = KnownProblem{
+		Name: "No-Keepalive",
+		Logs: []byte("KGP warning: no keepalive ack KGP warning: no keepalive ack for 8s"),
+		NextSteps: `A keepalive is necessary to keep the tunnel open.  You should NOT be seeing this message.  Once or twice in the logs is OK but not great.  Repeated Keepalive misses can end up killing the tunnel and is usually indicative of major networking problems.  Run these sumo queries to learn more.  
 
 Any results are bad basically.  You want the sumo search to return 0.
 _sourceName="/var/local/mount/maki1234/rw/var/log/upstart/gravina.log" 
@@ -52,8 +66,20 @@ _sourceName="/var/local/mount/makiNumberHere/rw/var/log/upstart/gravina.log" LIV
 _sourceName="/var/local/mount/makiNumberHere/rw/var/log/upstart/gravina.log" DEAD`}
 	AllProblems = append(AllProblems, noKeepalive)
 
-	var noNameProvidedDNS = KnownProblem{Name: "Nodename-nor-servename-DNS-Error", Logs: []byte("MAIN DNS error: nodename nor servname provided, or not known (-908)"), NextSteps: "The hostname on one of the lines above this couldn't be resolved. Usually its a maki subdomain and the local DNS servers aren't allowed to resolve the maki saucelabs.com subdomain.  Try using a tool like Dig from the Sauce Connect host machine to resolve the offending domain name."}
+	var noNameProvidedDNS = KnownProblem{
+		Name:      "Nodename-nor-servename-DNS-Error",
+		Logs:      []byte("MAIN DNS error: nodename nor servname provided, or not known (-908)"),
+		NextSteps: "The hostname on one of the lines above this couldn't be resolved. Usually its a maki subdomain and the local DNS servers aren't allowed to resolve the maki saucelabs.com subdomain.  Try using a tool like Dig from the Sauce Connect host machine to resolve the offending domain name."}
 	AllProblems = append(AllProblems, noNameProvidedDNS)
+
+	var connResetByPeer = KnownProblem{
+		Name: "Conn-Reset-By-Peer",
+		Logs: []byte("PROXY 127.0.0.1:44226 (172.20.43.218) <- wwwsome-website.com:443 connection error: socket error: Connection reset by peer"),
+		NextSteps: `This is a problem when the peer (the site you were trying to reach) closed the connection with a RST 
+packet. More info here: 
+https://stackoverflow.com/questions/1434451/what-does-connection-reset-by-peer-mean
+“Connection reset by peer” is the TCP/IP equivalent of slamming the phone back on the hook. It’s more polite than merely not replying, leaving one hanging. But it’s not the FIN-ACK expected of the truly polite TCP/IP converseur.`}
+	AllProblems = append(AllProblems, connResetByPeer)
 
 	return AllProblems
 }
