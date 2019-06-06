@@ -5,6 +5,7 @@ import (
 )
 
 func TestEarlyDisconnect(t *testing.T) {
+	AllProbs = AllProblems()
 	detect, _ := problem([]byte("2019-05-09 15:41:49.551 [75456] KGP libevent connection"))
 	if detect != true {
 		t.Errorf("Did not identify: 2019-05-09 15:41:49.551 [75456] KGP libevent connection")
@@ -27,6 +28,8 @@ func TestEarlyDisconnect(t *testing.T) {
 }
 
 func TestDNSResolution(t *testing.T) {
+	AllProbs = AllProblems()
+
 	detect, _ := problem([]byte("2019-05-09 15:41:49.551 [75456] DNS error"))
 	if detect != true {
 		t.Fail()
@@ -39,6 +42,8 @@ func TestDNSResolution(t *testing.T) {
 
 }
 func TestNoTunnelConn(t *testing.T) {
+	AllProbs = AllProblems()
+
 	detect, _ := problem([]byte("2019-05-09 15:41:49.551 [75456] 000000000000"))
 	if detect != true {
 		t.Errorf("Did not identify 2019-05-09 15:41:49.551 [75456] 000000000000")
@@ -47,6 +52,8 @@ func TestNoTunnelConn(t *testing.T) {
 }
 
 func TestSocketErr(t *testing.T) {
+	AllProbs = AllProblems()
+
 	target := "2019-05-15 09:01:02.291 [21134] MAIN failed to connect KGP (socket error: socket error: Connection timed out "
 	detect, _ := problem([]byte(target))
 	if detect != true {
@@ -63,6 +70,8 @@ func TestSocketErr(t *testing.T) {
 }
 
 func TestSSLErr(t *testing.T) {
+	AllProbs = AllProblems()
+
 	target := "20190429 141149.648 [9108] MAIN SSL verify error:num=20:unable to get local issuer certificate:depth=0:/C=US/ST=CA/O=Sauce Labs Inc/OU=Operations/CN=maki9.saucelabs.com"
 	detect, _ := problem([]byte(target))
 	if detect != true {
@@ -72,6 +81,8 @@ func TestSSLErr(t *testing.T) {
 }
 
 func TestDNSErr(t *testing.T) {
+	AllProbs = AllProblems()
+
 	target := "20190429 141149.648 [9108] MAIN DNS error: nodename nor servname provided, or not known (-908)"
 	detect, _ := problem([]byte(target))
 	if detect != true {
@@ -81,6 +92,8 @@ func TestDNSErr(t *testing.T) {
 }
 
 func TestNoKeepalive(t *testing.T) {
+	AllProbs = AllProblems()
+
 	target := "2019-04-24 13:47:54.744 [11156] KGP warning: no keepalive ack"
 	detect, _ := problem([]byte(target))
 	if detect != true {
@@ -97,6 +110,17 @@ func TestNoKeepalive(t *testing.T) {
 
 	target = "2019-04-24 13:47:54.744 [11156] no keepalive ack for 29s"
 	detect, _ = problem([]byte(target))
+	if detect != true {
+		t.Errorf("Did not identify: %s", target)
+		t.Fail()
+	}
+}
+
+func TestRSTByPeer(t *testing.T) {
+	AllProbs = AllProblems()
+
+	target := "2019-05-21 14:36:41.206 [5552] PROXY 127.0.0.1:44226 (172.20.43.218) <- wwwsome-website.com:443 connection error: socket error: Connection reset by peer"
+	detect, _ := problem([]byte(target))
 	if detect != true {
 		t.Errorf("Did not identify: %s", target)
 		t.Fail()
