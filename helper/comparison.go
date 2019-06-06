@@ -8,7 +8,7 @@ func problem(logline []byte) (bool, KnownProblem) {
 	if checkForEmpty(logline) {
 		return false, KnownProblem{}
 	}
-	for _, problem := range AllProblems() {
+	for _, problem := range AllProbs {
 		splitline := bytes.Split(logline, []byte(" "))
 		// start at (include) 3rd element in slice
 		core := bytes.Join(splitline[3:], []byte(" "))
