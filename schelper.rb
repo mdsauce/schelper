@@ -2,7 +2,6 @@ class Schelper < Formula
   desc "Analyze log files from Sauce Connect"
   homepage "https://github.com/mdsauce/schelper"
   url "https://github.com/mdsauce/schelper/archive/v1.0.1.tar.gz"
-  sha256 "ec647cec27758d80ad4dbe31f16303a695eee4e1b9126733c77ec23faa0cda73"
   depends_on "go" => :build
   version "1.0.1"
 
