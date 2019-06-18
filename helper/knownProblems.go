@@ -81,5 +81,11 @@ https://stackoverflow.com/questions/1434451/what-does-connection-reset-by-peer-m
 “Connection reset by peer” is the TCP/IP equivalent of slamming the phone back on the hook. It’s more polite than merely not replying, leaving one hanging. But it’s not the FIN-ACK expected of the truly polite TCP/IP converseur.`}
 	AllProblems = append(AllProblems, connResetByPeer)
 
+	var failSendHalfClose = KnownProblem{
+		Name:      "Fail-Send-Half-Close",
+		Logs:      []byte("PROXY 127.0.0.1:56882 failed to send half-close"),
+		NextSteps: "Something upstream from Sauce Connect's host machine is refusing to accept the connections from Sauce Connect.  This is specific to the KGP protocol and the actual content of the tunnel. \nThe line following this should contain a domain that was attempted to be reached.  This may have resulted in a 503 gateway Error or some other non-200 HTTP response during a test."}
+	AllProblems = append(AllProblems, failSendHalfClose)
+
 	return AllProblems
 }

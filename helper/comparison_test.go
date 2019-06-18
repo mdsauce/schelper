@@ -125,4 +125,23 @@ func TestRSTByPeer(t *testing.T) {
 		t.Errorf("Did not identify: %s", target)
 		t.Fail()
 	}
+
+	target = "2019-06-18 14:22:23.771 [60871] PROXY 127.0.0.1:57004 (172.20.49.172) <- www.visa.fr:443 connection error: socket error: Connection reset by peer"
+	detect, _ = problem([]byte(target))
+	if detect != true {
+		t.Errorf("Did not identify: %s", target)
+		t.Fail()
+	}
+}
+
+func TestFailSendHalfClose(t *testing.T) {
+	AllProbs = AllProblems()
+
+	target := "2019-06-18 14:22:23.247 [60871] PROXY 127.0.0.1:56882 failed to send half-close"
+	detect, _ := problem([]byte(target))
+	// fmt.Println(prob)
+	if detect != true {
+		t.Errorf("Did not identify: %s", target)
+		t.Fail()
+	}
 }
