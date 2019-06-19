@@ -4,7 +4,7 @@
 Feed in a Sauce Connect Proxy log, get back general info and next steps to troubleshoot any problems. -v, -vv, or zero verbosity, doesn't matter.  More data is better in general though.  
 
 ## Installation
-1. `brew tap mdsauce/schelper https://github.com/mdsauce/schelper`
+1. `brew tap mdsauce/schelper https://github.com/mdsauce/schelper-brew`
 2. `brew install schelper`
 Using Homebrew run the above two commands.  Should take about thirty seconds if you have Homebrew installed.
 
