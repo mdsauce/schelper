@@ -1,6 +1,7 @@
 package helper
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -87,6 +88,22 @@ func TestDNSErr(t *testing.T) {
 	detect, _ := problem([]byte(target))
 	if detect != true {
 		t.Errorf("Did not identify: %s", target)
+		t.Fail()
+	}
+
+	target = `2018-11-02 11:46:18.996 [35616] Command line arguments: sc -u sso-toyota.tcoe-phartheeb.kandasamy -k **** -tunnel-identifier mytunnel -v --pidfile C:\temp\sc.log 
+	`
+	detect, _ = problem([]byte(target))
+	if detect == true {
+		t.Errorf("False Positive on: %s", target)
+		t.Fail()
+	}
+
+	target = `2018-11-02 11:46:18.996 [35616] Command line arguments: sc -u sso-toyota.tcoe-phartheeb.kandasamy -k **** -tunnel-identifier mytunnel -v --pidfile C:\temp\sc.logn`
+	detect, prob := problem([]byte(target))
+	fmt.Println(prob)
+	if detect == true {
+		t.Errorf("False Positive on: %s", target)
 		t.Fail()
 	}
 }

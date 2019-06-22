@@ -5,7 +5,7 @@ import (
 )
 
 func problem(logline []byte) (bool, KnownProblem) {
-	if checkForEmpty(logline) {
+	if checkForEmpty(logline) || cmdLine(logline) {
 		return false, KnownProblem{}
 	}
 	for _, problem := range AllProbs {
@@ -142,6 +142,13 @@ func scClientClosed(logline []byte) bool {
 func checkForEmpty(logline []byte) bool {
 	splitline := bytes.Split(logline, []byte(" "))
 	if len(splitline) < 4 {
+		return true
+	}
+	return false
+}
+
+func cmdLine(logline []byte) bool {
+	if bytes.Contains(logline, []byte("Command line arguments")) {
 		return true
 	}
 	return false
