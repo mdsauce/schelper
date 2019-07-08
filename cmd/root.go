@@ -18,11 +18,13 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/mdsauce/schelper/version"
 	"github.com/spf13/cobra"
 )
 
 var cfgFile string
+
+// CurVersion is a global reference to the version number set at build time
+var CurVersion = "DEV"
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -33,7 +35,7 @@ problems and their suggested resolutions or next steps to gather more info.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	//	Run: func(cmd *cobra.Command, args []string) { },
-	Version: fmt.Sprintf("%s", version.Version),
+	Version: fmt.Sprintf("%s", CurVersion),
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -57,7 +59,7 @@ func init() {
 	// when this action is called directly.
 	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
-	rootCmd.Flags().BoolP("version", "v", false, "Print version information")
+	rootCmd.Flags().Bool("version", false, "Print the version of schelper")
 }
 
 // initConfig reads in config file and ENV variables if set.

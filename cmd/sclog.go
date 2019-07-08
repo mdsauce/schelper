@@ -22,7 +22,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// sclogCmd represents the sclog command
+// sclogCmd represents the 'schelper sclog' command
 var sclogCmd = &cobra.Command{
 	Use:   "sclog",
 	Short: "Pass a valid file w/ the path to start the analysis.",
@@ -30,7 +30,7 @@ var sclogCmd = &cobra.Command{
 Use a full or relative path when specifying a file.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		logger.SetupLogfile()
-		if checkArgs(args) != true {
+		if validArgs(args) != true {
 			logger.Disklog.Debug("Exiting")
 			os.Exit(1)
 		}
@@ -39,6 +39,7 @@ Use a full or relative path when specifying a file.`,
 			logger.Disklog.Warn("Problem retrieving verbosity flag", err)
 		}
 
+		logger.Disklog.Debugf("Launching schelper version %s", CurVersion)
 		helper.ReadLog(args[0], verbose)
 		logger.Disklog.Debug("Program done.  Exiting")
 		os.Exit(0)
@@ -60,7 +61,7 @@ func init() {
 
 }
 
-func checkArgs(args []string) bool {
+func validArgs(args []string) bool {
 	if len(args) < 1 {
 		logger.Disklog.Warn("Not enough arguments, no SC logfile specified")
 		return false

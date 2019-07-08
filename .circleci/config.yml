@@ -7,6 +7,7 @@ jobs:
     steps:
       - checkout
       - run: pwd && ls
-      - run: go install
+      - run: go build -ldflags "-X github.com/mdsauce/schelper/cmd.CurVersion=`git rev-parse HEAD`"
       - run: go test ./...
-      - run: schelper --help
+      - run: ./schelper --version
+      - run: ./schelper --help
