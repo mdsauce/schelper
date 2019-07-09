@@ -11,7 +11,7 @@ type scLifecycle struct {
 	stage   string
 	reached bool
 	target  string
-	line    []byte
+	line    int
 }
 
 // ReadLog will read line by line and
@@ -24,11 +24,13 @@ func ReadLog(sclog string, verbose bool) {
 		return
 	}
 	cycle := setupLifecycle()
+	lineNum := 1
 	meta := make(map[string]int)
 	scanner := bufio.NewScanner(fp)
 	for scanner.Scan() {
 		line := scanner.Bytes()
 		if isProblem, problem := problem(line); isProblem == true {
+			// if this is a known problem add it to the metadata if it isn't present
 			_, present := meta[problem.Name]
 			if present {
 				meta[problem.Name] = meta[problem.Name] + 1
@@ -40,30 +42,32 @@ func ReadLog(sclog string, verbose bool) {
 				meta[problem.Name] = meta[problem.Name] + 1
 			}
 		}
+
 		if cycle[0].reached == false && clientStarting(line) {
+			cycle[0].line = lineNum
 			cycle[0].reached = true
-			cycle[0].line = line
 		}
 		if cycle[1].reached == false && clientStarted(line) {
 			cycle[1].reached = true
-			cycle[1].line = line
+			cycle[1].line = lineNum
 		}
 		if cycle[2].reached == false && connectingToMaki(line) {
 			cycle[2].reached = true
-			cycle[2].line = line
+			cycle[2].line = lineNum
 		}
 		if cycle[3].reached == false && scUp(line) {
 			cycle[3].reached = true
-			cycle[3].line = line
+			cycle[3].line = lineNum
 		}
 		if cycle[4].reached == false && scTunnelClosed(line) {
 			cycle[4].reached = true
-			cycle[4].line = line
+			cycle[4].line = lineNum
 		}
 		if cycle[5].reached == false && scClientClosed(line) {
 			cycle[5].reached = true
-			cycle[5].line = line
+			cycle[5].line = lineNum
 		}
+		lineNum++
 	}
 	metaOutput(meta)
 	lifecycleOutput(cycle)

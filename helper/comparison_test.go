@@ -99,8 +99,16 @@ func TestDNSErr(t *testing.T) {
 		t.Fail()
 	}
 
-	target = `2018-11-02 11:46:18.996 [35616] Command line arguments: sc -u sso-toyota.tcoe-phartheeb.kandasamy -k **** -tunnel-identifier mytunnel -v --pidfile C:\temp\sc.logn`
+	target = ` 2018-11-02 11:46:18.996 [35616] Command line arguments: sc -u sso-toyota.tcoe-phartheeb.kandasamy -k **** -tunnel-identifier mytunnel -v --pidfile C:\temp\sc.log `
 	detect, prob := problem([]byte(target))
+	fmt.Println(prob)
+	if detect == true {
+		t.Errorf("False Positive on: %s", target)
+		t.Fail()
+	}
+
+	target = `2019-06-24 11:06:52.502 [54819] Sauce Connect 4.5.3, build 4602 4b3da11 `
+	detect, prob = problem([]byte(target))
 	fmt.Println(prob)
 	if detect == true {
 		t.Errorf("False Positive on: %s", target)

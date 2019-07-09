@@ -37,6 +37,7 @@ func lifecycleOutput(cycle [6]scLifecycle) {
 		if cycle[i].reached {
 			logger.Disklog.Infof("Lifecycle Stage: %s", cycle[i].stage)
 			logger.Disklog.Infof("Found logline: '%s'", cycle[i].target)
+			logger.Disklog.Infof("Found on logline %d", cycle[i].line)
 		} else {
 			logger.Disklog.Infof("------> Lifecycle Stage: %s not reached <------", cycle[i].stage)
 			logger.Disklog.Infof("Did not find logline: '%s'", cycle[i].target)
