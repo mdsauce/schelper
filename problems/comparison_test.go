@@ -1,4 +1,4 @@
-package helper
+package problems
 
 import (
 	"fmt"
@@ -48,6 +48,12 @@ func TestNoTunnelConn(t *testing.T) {
 	detect, _ := problem([]byte("2019-05-09 15:41:49.551 [75456] 000000000000"))
 	if detect != true {
 		t.Errorf("Did not identify 2019-05-09 15:41:49.551 [75456] 000000000000")
+		t.Fail()
+	}
+
+	detect, _ = problem([]byte("2019-05-09 15:41:49.551 [75456] CMD sent reply 000000000000"))
+	if detect != true {
+		t.Errorf("Did not find: CMD sent reply 000000000000")
 		t.Fail()
 	}
 }
@@ -167,6 +173,18 @@ func TestFailSendHalfClose(t *testing.T) {
 	// fmt.Println(prob)
 	if detect != true {
 		t.Errorf("Did not identify: %s", target)
+		t.Fail()
+	}
+}
+
+func TestCreateListenerFail(t *testing.T) {
+	AllProbs = AllProblems()
+
+	target := "2018-11-02 11:46:29.003 [35616] MAIN failed to create listener on port 4445"
+	detect, _ := problem([]byte(target))
+	// fmt.Println(prob)
+	if detect != true {
+		t.Errorf("Did not catch this error: %s", target)
 		t.Fail()
 	}
 }

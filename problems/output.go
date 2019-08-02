@@ -1,4 +1,4 @@
-package helper
+package problems
 
 import (
 	"fmt"
@@ -15,10 +15,7 @@ Where: %s
 Suggested Next Steps: 
 %s
 
-General Steps for this type of Disruption: 
-%s
-
-`, prob.Name, logline, prob.NextSteps, prob.Disruption.GeneralSteps)
+`, prob.Name, logline, prob.NextSteps)
 }
 
 func metaOutput(metadata map[string]int) {

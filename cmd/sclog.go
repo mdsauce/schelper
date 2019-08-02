@@ -17,7 +17,7 @@ package cmd
 import (
 	"os"
 
-	"github.com/mdsauce/schelper/helper"
+	"github.com/mdsauce/schelper/problems"
 	"github.com/mdsauce/schelper/logger"
 	"github.com/spf13/cobra"
 )
@@ -40,7 +40,7 @@ Use a full or relative path when specifying a file.`,
 		}
 
 		logger.Disklog.Debugf("Launching schelper version %s", CurVersion)
-		helper.ReadLog(args[0], verbose)
+		problems.ReadLog(args[0], verbose)
 		logger.Disklog.Debug("Program done.  Exiting")
 		os.Exit(0)
 	},
