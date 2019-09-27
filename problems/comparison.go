@@ -5,7 +5,7 @@ import (
 )
 
 func problem(logline []byte) (bool, KnownProblem) {
-	if checkForEmpty(logline) || cmdLine(logline) {
+	if checkForEmpty(logline) || cmdLine(logline) || whitelist(logline) {
 		return false, KnownProblem{}
 	}
 	logline = bytes.TrimSpace(logline)
@@ -14,15 +14,11 @@ func problem(logline []byte) (bool, KnownProblem) {
 		// start at (include) 3rd element in slice
 		corelog := bytes.Join(splitline[3:], []byte(" "))
 
-		headerTest := make(chan bool)
-		partialTest := make(chan bool)
-		go headerMatch(splitline[3:], problem.Logs, headerTest)
-		go partialMatch(splitline[3:], problem.Logs, partialTest)
-		headerFound := <-headerTest
-		generalFound := <-partialTest
+		headerFound := headerMatch(splitline[3:], problem.Logs)
+		partialFound := partialMatch(splitline[3:], problem.Logs)
 
 		// Lastly we do a standard Contains() check
-		if bytes.Contains(problem.Logs, corelog) || headerFound || generalFound {
+		if bytes.Contains(problem.Logs, corelog) || headerFound || partialFound {
 			return true, problem
 		}
 	}
@@ -31,31 +27,30 @@ func problem(logline []byte) (bool, KnownProblem) {
 
 // headerMatch looks at the "header" of a log (First 3 strings)
 // This captures unique cases where there is no timestamp or other default info
-func headerMatch(logline [][]byte, problem []byte, found chan bool) {
+func headerMatch(logline [][]byte, problem []byte) bool {
 	if len(logline) >= 3 {
 		header := bytes.Join(logline[:3], []byte(" "))
 
 		if bytes.Contains(problem, header) {
-			found <- true
+			return true
 		}
 	}
-	found <- false
+	return false
 }
 
 // partialMatch is a less precise method where we start at the end of a logline
 // and move to the middle.  This allows exclusions of unique strings like domain names
 // We call Contains against to see if shrunkLine is inside problem until we've eaten half the logline
-func partialMatch(logline [][]byte, problem []byte, found chan bool) {
-	for i := 0; i <= len(logline)/2; i++ {
+func partialMatch(logline [][]byte, problem []byte) bool {
+	for i := 2; i <= len(logline)/2; i++ {
 		final := len(logline) - i
 		shrunkLine := bytes.Join(logline[final-1:], []byte(" "))
-		// fmt.Println(string(shrunkLine))
 		if bytes.Contains(problem, shrunkLine) {
-			found <- true
-			return
+			// fmt.Printf("comparing: %s <---to---> %s\n", string(problem), string(shrunkLine))
+			return true
 		}
 	}
-	found <- false
+	return false
 }
 
 // Lifecycle stuff
@@ -148,6 +143,13 @@ func checkForEmpty(logline []byte) bool {
 
 func cmdLine(logline []byte) bool {
 	if bytes.Contains(logline, []byte("Command line arguments")) {
+		return true
+	}
+	return false
+}
+
+func whitelist(logline []byte) bool {
+	if bytes.Contains(logline, []byte("MAIN created client listener on port 4445")) {
 		return true
 	}
 	return false

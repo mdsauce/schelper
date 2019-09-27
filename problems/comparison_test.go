@@ -41,6 +41,13 @@ func TestDNSResolution(t *testing.T) {
 		t.Fail()
 	}
 
+	target := "2019-09-20 11:44:13.012 [28904] PROXY header field 'Host'"
+	detect, _ = problem([]byte(target))
+	if detect == true {
+		t.Errorf("False positive on this line: %s", target)
+		t.Fail()
+	}
+
 }
 func TestNoTunnelConn(t *testing.T) {
 	AllProbs = AllProblems()
@@ -83,6 +90,13 @@ func TestSSLErr(t *testing.T) {
 	detect, _ := problem([]byte(target))
 	if detect != true {
 		t.Errorf("Did not identify: %s", target)
+		t.Fail()
+	}
+
+	target = "2019-08-23 14:29:44.192 [1784] CHANNEL 2147483649 connected to ext server"
+	detect, _ = problem([]byte(target))
+	if detect == true {
+		t.Errorf("False Positive on this string: %s", target)
 		t.Fail()
 	}
 }
@@ -163,6 +177,20 @@ func TestRSTByPeer(t *testing.T) {
 		t.Errorf("Did not identify: %s", target)
 		t.Fail()
 	}
+
+	target = "2019-08-08 15:20:36.709 [24824] PROXY adding ares fd 1552 events 2"
+	detect, _ = problem([]byte(target))
+	if detect == true {
+		t.Errorf("False positive on this line: %s", target)
+		t.Fail()
+	}
+
+	target = "Where: 2019-09-20 11:44:11.688 [28904] CURL cURL: TCP_NODELAY set"
+	detect, _ = problem([]byte(target))
+	if detect == true {
+		t.Errorf("False positive on this line: %s", target)
+		t.Fail()
+	}
 }
 
 func TestFailSendHalfClose(t *testing.T) {
@@ -175,6 +203,13 @@ func TestFailSendHalfClose(t *testing.T) {
 		t.Errorf("Did not identify: %s", target)
 		t.Fail()
 	}
+
+	target = "2019-09-20 11:44:11.986 [28904] CHANNEL 2147483649 -> half-close"
+	detect, _ = problem([]byte(target))
+	if detect == true {
+		t.Errorf("False Positive on this line: %s", target)
+		t.Fail()
+	}
 }
 
 func TestCreateListenerFail(t *testing.T) {
@@ -185,6 +220,38 @@ func TestCreateListenerFail(t *testing.T) {
 	// fmt.Println(prob)
 	if detect != true {
 		t.Errorf("Did not catch this error: %s", target)
+		t.Fail()
+	}
+
+	target = "2019-08-23 14:29:42.248 [1784] MAIN created client listener on port 4445"
+	detect, _ = problem([]byte(target))
+	if detect == true {
+		t.Errorf("False positive on this line: %s", target)
+		t.Fail()
+	}
+}
+
+func TestFalsePositives(t *testing.T) {
+	AllProbs = AllProblems()
+
+	target := "2019-08-23 14:29:42.660 [1784] KGP <- last seen seq no. from announcement 0"
+	detect, _ := problem([]byte(target))
+	if detect == true {
+		t.Errorf("False positive on this line: %s", target)
+		t.Fail()
+	}
+
+	target = "2019-09-20 11:44:06.651 [28904] Unable to serve metrics on localhost:8888, error was: listen tcp 127.0.0.1:8888: bind: address already in use"
+	detect, _ = problem([]byte(target))
+	if detect == true {
+		t.Errorf("False positive on this line: %s", target)
+		t.Fail()
+	}
+
+	target = "2019-08-08 15:20:36.706 [24824] PROXY parent proxy: zscaler.emirates.com, trying to resolve it"
+	detect, _ = problem([]byte(target))
+	if detect == true {
+		t.Errorf("False positive on this line: %s", target)
 		t.Fail()
 	}
 }
