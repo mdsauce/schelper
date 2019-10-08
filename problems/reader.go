@@ -3,6 +3,7 @@ package problems
 import (
 	"bufio"
 	"os"
+	"strings"
 
 	"github.com/mdsauce/schelper/logger"
 )
@@ -23,23 +24,28 @@ func ReadLog(sclog string, verbose bool) {
 		logger.Disklog.Warnf("Could not open file %s", sclog)
 		return
 	}
+	args := "not found"
 	cycle := setupLifecycle()
 	lineNum := 1
-	meta := make(map[string]int)
+	problems := make(map[string]int)
 	scanner := bufio.NewScanner(fp)
 	for scanner.Scan() {
 		line := scanner.Bytes()
+		if launchArgs(string(line)) {
+			a := strings.Split(string(line), " ")
+			args = strings.Join(a[3:], " ")
+		}
 		if isProblem, problem := problem(line); isProblem == true {
-			// if this is a known problem add it to the metadata if it isn't present
-			_, present := meta[problem.Name]
+			// if this is a known problem add it to the problemsdata if it isn't present
+			_, present := problems[problem.Name]
 			if present {
-				meta[problem.Name] = meta[problem.Name] + 1
+				problems[problem.Name] = problems[problem.Name] + 1
 				if verbose {
 					singleOutput(problem, line)
 				}
 			} else {
 				singleOutput(problem, line)
-				meta[problem.Name] = meta[problem.Name] + 1
+				problems[problem.Name] = problems[problem.Name] + 1
 			}
 		}
 
@@ -69,7 +75,8 @@ func ReadLog(sclog string, verbose bool) {
 		}
 		lineNum++
 	}
-	metaOutput(meta)
+	logger.Disklog.Info("Tunnel Launch Arguments: ", args)
+	problemsOutput(problems)
 	lifecycleOutput(cycle)
 }
 

@@ -18,10 +18,10 @@ Suggested Next Steps:
 `, prob.Name, logline, prob.NextSteps)
 }
 
-func metaOutput(metadata map[string]int) {
+func problemsOutput(problemsdata map[string]int) {
 	logger.Disklog.Info("Metadata of All Problems Encountered")
 	logger.Disklog.Info("------------------------------------")
-	for key, val := range metadata {
+	for key, val := range problemsdata {
 		logger.Disklog.Infof("%s: %d", key, val)
 	}
 	fmt.Println()
