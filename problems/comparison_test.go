@@ -255,3 +255,14 @@ func TestFalsePositives(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestAPIRateLimit(t *testing.T) {
+	AllProbs = AllProblems()
+
+	target := "2019-10-03 09:40:54.049 [22985] error querying from https://saucelabs.com/rest/v1/max.dobeck/tunnels?full=1, error was: {\"message\": \"API rate limit exceeded for public:66.85.49.105. See rate-limiting section in our API documentation.\"}. HTTP status: 429 Unknown Status"
+	detect, _ := problem([]byte(target))
+	if detect == true {
+		t.Errorf("False positive on this line: %s", target)
+		t.Fail()
+	}
+}

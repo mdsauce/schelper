@@ -42,14 +42,29 @@ Confirm that you can curl -vv a maki and the subdomain.  You should also use pin
 	Verify the client is not using some weird Custom Defined Self-Signed Certificate.  I.g. check the machine they're on with the customer, each OS will have a custom way of getting and verifying Certs are valid.  Try using the --capath <capath dir> flag.`}
 	AllProblems = append(AllProblems, custSSLTLS)
 
-	var sockMakiErr = KnownProblem{Name: "Socket-Maki-Conn", Logs: []byte("MAIN failed to connect KGP (socket error: socket error: No connection could be made because the target machine actively refused it.) MAIN failed to connect KGP socket error MAIN failed to connect KGP (socket error: socket error: Connection timed out) MAIN failed to connect KGP (socket error: socket error: Connection timed out "), NextSteps: `
-Sauce labs lives at a select group of IP blocks covered in the whitelist.  So if we're unable to connect to a Maki or any other endpoint try pinging that endpoint from the Sauce Connect Host machine aka the host.
+	var sockMakiErr = KnownProblem{Name: "Socket-Maki-Conn", Logs: []byte("MAIN failed to connect KGP (socket error: socket error: No connection could be made because the target machine actively refused it.) MAIN failed to connect KGP socket error MAIN failed to connect KGP (socket error: socket error: Connection timed out) MAIN failed to connect KGP (socket error: socket error: Connection timed out "), NextSteps: `The above error message indicates that the Sauce Connect client couldn't connect to the server (Maki). The connection could be blocked by the SC client host machine's network and/or proxy firewall. You can perform the following commands from a Command Prompt/Terminal on the host machine to test the connection. Please note that the host machine is usually owned by the customers and we have to work with them to perform the commands on their machines.
+	Sauce Labs utilizes several IP blocks for our services. If the IP address "66.85.49.50" used in the example is not in service, please choose another one to run the tests. For instance, you can locate the IP address used by the tunnel in the SC client log.
 	
-From this host machine ping 162.222.75.78.
-Curl 162.222.75.78:443 as the ping protocol does not use port 443 and may not be blocked. You may get Empty reply from server which is good.  You weren't blocked by a proxy or firewall and the request actually left the private network.
-Telnet as well if you want to cover all bases: telnet maki86032.miso.saucelabs.com 443.  Again you just want to make sure you don't get a 4xx Blocked by proxy blah blah blah.
-
-All of these steps are just to ensure a request can leave the private network without being blocked or filtered.`}
+		ping 66.85.49.50
+		Expected result:
+		64 bytes from 66.85.49.50: icmp_seq=0 ttl=52 time=25.881 ms
+		Undesired result:
+		Request timeout for icmp_seq 0
+	
+	This is a simple network connectivity test. However, ping does not use port 443. This does not validate HTTPS connections with SSL certificates. Also, some networks may block the internet protocol (ICMP) used by ping.
+	
+		curl 66.85.49.50:443
+		Expected result:
+		curl: (52) Empty reply from server
+		Undesired result:
+		curl: (7) Couldn't connect to server
+	
+	The command may return "Empty reply from server", which is good. This means the host machine is not blocked by a proxy or firewall and the request actually left the private network.
+	
+		telnet maki665.miso.saucelabs.com 443
+		You may perform a telnet connection test as well if you want to cover all bases. Again you just want to make sure you don't get a 4xx Blocked by proxy.
+	
+	The steps above are just to ensure a request can leave the private network and reach Sauce Labs servers without being blocked or filtered. If the tests show the connection was indeed blocked, the customer will need to contact their network/firewall team to whitelist our IP blocks.`}
 	AllProblems = append(AllProblems, sockMakiErr)
 
 	var noKeepalive = KnownProblem{
@@ -90,6 +105,13 @@ https://stackoverflow.com/questions/1434451/what-does-connection-reset-by-peer-m
 		NextSteps: "Something is using the port specified in the error message.  Read about the --se-port flag in Sauce Connect.",
 	}
 	AllProblems = append(AllProblems, createListenerFailed)
+
+	var apiRateLimit = KnownProblem{
+		Name:      "API-rate-limit",
+		Logs:      []byte("HTTP status: 429"),
+		NextSteps: "Too many HTTP requests were sent to our API.  Please wait 15-30 minutes and try again.",
+	}
+	AllProblems = append(AllProblems, apiRateLimit)
 
 	return AllProblems
 }
