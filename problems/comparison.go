@@ -133,6 +133,8 @@ func scClientClosed(logline []byte) bool {
 	return false
 }
 
+// ----End of Lifecycle stuff----
+
 func checkForEmpty(logline []byte) bool {
 	splitline := bytes.Split(logline, []byte(" "))
 	if len(splitline) < 4 {
@@ -153,4 +155,20 @@ func whitelist(logline []byte) bool {
 		return true
 	}
 	return false
+}
+
+// makiReply will return a function that can track if the
+// all important maki reply 000000000001 was ever sent.  The returned
+// function should be allocated to a variable.
+func makiReply() func([]byte) bool {
+	reply := false
+	return func(logline []byte) bool {
+		if reply { //skip if true
+			return reply
+		}
+		if bytes.Contains(logline, []byte("000000000001")) {
+			reply = true
+		}
+		return reply
+	}
 }

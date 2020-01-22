@@ -50,17 +50,17 @@ func TestDNSResolution(t *testing.T) {
 
 }
 func TestNoTunnelConn(t *testing.T) {
-	AllProbs = AllProblems()
-
-	detect, _ := problem([]byte("2019-05-09 15:41:49.551 [75456] 000000000000"))
-	if detect != true {
-		t.Errorf("Did not identify 2019-05-09 15:41:49.551 [75456] 000000000000")
+	target := []byte("2019-05-09 15:41:49.551 [75456] 000000000001")
+	reply := makiReply()
+	if reply(target) != true {
+		t.Errorf("Did not find: CMD sent reply 000000000001")
 		t.Fail()
 	}
 
-	detect, _ = problem([]byte("2019-05-09 15:41:49.551 [75456] CMD sent reply 000000000000"))
-	if detect != true {
-		t.Errorf("Did not find: CMD sent reply 000000000000")
+	target2 := []byte("2019-05-09 15:41:49.551 [75456] 000000000000 2019-05-09 15:41:49.551 [75456] 000000000000 2019-05-09 15:41:49.551 [75456] 000000000000 2019-05-09 15:41:49.551 [75456] 000000000000\n2019-05-09 15:41:49.551 [75456] 000000000000")
+	reply2 := makiReply()
+	if reply2(target2) == true {
+		t.Errorf("False positive!  reply() should not have been marked true as no 0000001 code was present. Reply status: %v", reply(target2))
 		t.Fail()
 	}
 }

@@ -17,8 +17,8 @@ package cmd
 import (
 	"os"
 
-	"github.com/mdsauce/schelper/problems"
 	"github.com/mdsauce/schelper/logger"
+	"github.com/mdsauce/schelper/problems"
 	"github.com/spf13/cobra"
 )
 

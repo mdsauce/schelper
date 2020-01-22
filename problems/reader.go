@@ -29,6 +29,7 @@ func ReadLog(sclog string, verbose bool) {
 	lineNum := 1
 	problems := make(map[string]int)
 	scanner := bufio.NewScanner(fp)
+	reply := makiReply()
 	for scanner.Scan() {
 		line := scanner.Bytes()
 		if launchArgs(string(line)) {
@@ -48,7 +49,9 @@ func ReadLog(sclog string, verbose bool) {
 				problems[problem.Name] = problems[problem.Name] + 1
 			}
 		}
-
+		if !reply(line) {
+			reply(line)
+		}
 		if cycle[0].reached == false && clientStarting(line) {
 			cycle[0].line = lineNum
 			cycle[0].reached = true
@@ -76,7 +79,11 @@ func ReadLog(sclog string, verbose bool) {
 		lineNum++
 	}
 	logger.Disklog.Info("Tunnel Launch Arguments: ", args)
+	if !reply([]byte("reply?")) {
+		problems["NoMakiReply"] = problems["NoMakiReply"] + 1
+	}
 	problemsOutput(problems)
+	noMakiReplyOutput(reply([]byte("reply?")))
 	lifecycleOutput(cycle)
 }
 

@@ -30,13 +30,6 @@ Confirm this only happens one time, at the end of the log after the Stop signal,
 This could be the customer network having problems maintaining the TCP tunnel or problems with the Keep Alive signal.  Look for any DEAD or LIVE signals in Sumo.`}
 	AllProblems = append(AllProblems, earlyDisconnect)
 
-	var noTunnelConnection = KnownProblem{Name: "No-Initial-Tunnel", Logs: []byte("CMD sent reply 000000000000"), NextSteps: `
-This may not be a problem.  It can happen a handful of times 
-before seeing the corresponding 000000000001 sent reply.  If it happens reliably and only on the customer's network then there is a problem opening a tunnel, i.e. connecting to the Maki Tunnel VM.
-	
-Confirm that you can curl -vv a maki and the subdomain.  You should also use ping to see if there is packet loss.  Networking/IT team from customers side will probably need to intervene.  In the past this has been caused by not whitelisting *.miso.saucelabs.com or *.saucelabs.com.  Whitelisting *.saucelabs.com is the best option if the customer is willing.`}
-	AllProblems = append(AllProblems, noTunnelConnection)
-
 	var custSSLTLS = KnownProblem{Name: "SSL/TLS-Customer-Cert", Logs: []byte("MAIN SSL verify error MAIN SSL verify error:num=19:self signed certificate in certificate chain:depth=3:/CN= KGP SSL error: certificate verify failed in SSL routines ssl3_get_server_certificate libevent connection error"), NextSteps: `We are rejecting this because we can't verify the Self Signed cert being used is real with any of the 3rd party Certificate Authorities.
 
 	Verify the client is not using some weird Custom Defined Self-Signed Certificate.  I.g. check the machine they're on with the customer, each OS will have a custom way of getting and verifying Certs are valid.  Try using the --capath <capath dir> flag.`}
