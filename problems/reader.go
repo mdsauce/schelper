@@ -79,11 +79,14 @@ func ReadLog(sclog string, verbose bool) {
 		lineNum++
 	}
 	logger.Disklog.Info("Tunnel Launch Arguments: ", args)
-	if !reply([]byte("reply?")) {
-		problems["NoMakiReply"] = problems["NoMakiReply"] + 1
+	if veryVerbose(args) {
+		makiReply := reply([]byte("reply?"))
+		if !makiReply {
+			problems["NoMakiReply"] = problems["NoMakiReply"] + 1
+		}
+		noMakiReplyOutput(makiReply)
 	}
 	problemsOutput(problems)
-	noMakiReplyOutput(reply([]byte("reply?")))
 	lifecycleOutput(cycle)
 }
 
