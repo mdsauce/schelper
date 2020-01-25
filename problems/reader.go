@@ -2,18 +2,12 @@ package problems
 
 import (
 	"bufio"
+	"bytes"
 	"os"
 	"strings"
 
 	"github.com/mdsauce/schelper/logger"
 )
-
-type scLifecycle struct {
-	stage   string
-	reached bool
-	target  string
-	line    int
-}
 
 // ReadLog will read line by line and
 // analyze the strings as bytes
@@ -25,7 +19,8 @@ func ReadLog(sclog string, verbose bool) {
 		return
 	}
 	args := "not found"
-	cycle := setupLifecycle()
+	var lifecycle scLifecycle
+	lifecycle.initLifecycle()
 	lineNum := 1
 	problems := make(map[string]int)
 	scanner := bufio.NewScanner(fp)
@@ -52,29 +47,12 @@ func ReadLog(sclog string, verbose bool) {
 		if !reply(line) {
 			reply(line)
 		}
-		if cycle[0].reached == false && clientStarting(line) {
-			cycle[0].line = lineNum
-			cycle[0].reached = true
-		}
-		if cycle[1].reached == false && clientStarted(line) {
-			cycle[1].reached = true
-			cycle[1].line = lineNum
-		}
-		if cycle[2].reached == false && connectingToMaki(line) {
-			cycle[2].reached = true
-			cycle[2].line = lineNum
-		}
-		if cycle[3].reached == false && scUp(line) {
-			cycle[3].reached = true
-			cycle[3].line = lineNum
-		}
-		if cycle[4].reached == false && scTunnelClosed(line) {
-			cycle[4].reached = true
-			cycle[4].line = lineNum
-		}
-		if cycle[5].reached == false && scClientClosed(line) {
-			cycle[5].reached = true
-			cycle[5].line = lineNum
+
+		for i := range lifecycle.stages {
+			if lifecycle.stages[i].reached == false && bytes.Contains(line, []byte(lifecycle.stages[i].target)) {
+				lifecycle.stages[i].line = lineNum
+				lifecycle.stages[i].reached = true
+			}
 		}
 		lineNum++
 	}
@@ -87,32 +65,5 @@ func ReadLog(sclog string, verbose bool) {
 		noMakiReplyOutput(makiReply)
 	}
 	problemsOutput(problems)
-	lifecycleOutput(cycle)
-}
-
-func setupLifecycle() [6]scLifecycle {
-	var lifecycle [6]scLifecycle
-	lifecycle[0].stage = "Client attempted to start"
-	lifecycle[0].target = "connecting to Sauce Labs REST API"
-
-	lifecycle[1].stage = "Client started"
-	lifecycle[1].target = "Started scproxy on port"
-
-	lifecycle[2].stage = "Client attempted to connect to Maki"
-	lifecycle[2].target = "connecting to tunnel VM"
-
-	lifecycle[3].stage = "Sauce Connect Tunnel started"
-	lifecycle[3].target = "Sauce Connect is up, you may start your tests."
-
-	lifecycle[4].stage = "Client stopping attempts to reach Maki."
-	lifecycle[4].target = "Connection closed"
-
-	lifecycle[5].stage = "Client Shutdown"
-	lifecycle[5].target = "Goodbye."
-
-	for i := range lifecycle {
-		lifecycle[i].reached = false
-	}
-
-	return lifecycle
+	lifecycle.lifecycleOutput()
 }

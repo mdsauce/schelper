@@ -38,19 +38,3 @@ func problemsOutput(problemsdata map[string]int) {
 	}
 	fmt.Println()
 }
-
-func lifecycleOutput(cycle [6]scLifecycle) {
-	logger.Disklog.Info("Sauce Connect Lifecycle")
-	logger.Disklog.Info("------------------------------------")
-	for i := range cycle {
-		if cycle[i].reached {
-			logger.Disklog.Infof("Lifecycle Stage: %s", cycle[i].stage)
-			logger.Disklog.Infof("Found logline: '%s'", cycle[i].target)
-			logger.Disklog.Infof("Found on logline %d", cycle[i].line)
-		} else {
-			logger.Disklog.Infof("------> Lifecycle Stage: %s not reached <------", cycle[i].stage)
-			logger.Disklog.Infof("Did not find logline: '%s'", cycle[i].target)
-		}
-		fmt.Println()
-	}
-}
