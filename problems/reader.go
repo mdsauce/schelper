@@ -32,7 +32,7 @@ func ReadLog(sclog string, verbose bool) {
 	reply := makiReply()
 	for scanner.Scan() {
 		line := scanner.Bytes()
-		if launchArgs(string(line)) {
+		if launchArgs(line) {
 			a := strings.Split(string(line), " ")
 			args = strings.Join(a[3:], " ")
 		}

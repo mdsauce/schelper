@@ -1,23 +1,35 @@
 package problems
 
 import (
+	"bytes"
 	"strings"
 )
 
-// should build a struct here
+const (
+	usernameShort = "-u"
+	usernameLong  = "--user"
+	keyShort      = "-k"
+	keyLong       = "--api-key"
+	vvShort       = "-vv"
+	vvLong        = "--very-verbose"
+)
 
-func launchArgs(line string) bool {
-	if strings.Contains(line, " -u ") || strings.Contains(line, " -k ") || strings.Contains(line, " --user ") || strings.Contains(line, " --api-key ") {
-		return true
+var launchArgsFingerprint = [...]string{usernameShort, usernameLong, keyShort, keyLong, vvShort, vvLong}
+
+func launchArgs(line []byte) bool {
+	for _, arg := range launchArgsFingerprint {
+		if bytes.Contains(line, []byte(arg)) {
+			return true
+		}
 	}
 	return false
 }
 
 func veryVerbose(launchArgs string) bool {
-	if strings.Contains(launchArgs, "--very-verbose") || strings.Contains(launchArgs, "-vv") {
+	if strings.Contains(launchArgs, vvShort) || strings.Contains(launchArgs, vvLong) {
 		return true
 	}
-	if countRepeats(launchArgs, "-v") >= 2 {
+	if countRepeats(string(launchArgs), "-v") >= 2 {
 		return true
 	}
 	return false
