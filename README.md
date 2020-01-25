@@ -12,7 +12,7 @@ Using Homebrew run the above two commands.  Should take about thirty seconds if 
 If you don't have Homebrew or a Mac then `go get mdsauce/schelper` should work.  Cloning/forking the repo then doing a `go build` or `go install` will also work as long as you have golang installed.
 
 ## Usage Guide
-`$ schelper sclog ~/absolute/or/relative/path/to/sc.log`
+`$ schelper read ~/absolute/or/relative/path/to/sc.log`
 
 `$ schelper -h` or `--help` to get more info about your options and default settings.
 `$ schelper sclog -h` or `--help` to get more info about specifying the SC log.

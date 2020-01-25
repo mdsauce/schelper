@@ -22,12 +22,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// sclogCmd represents the 'schelper sclog' command
 var sclogCmd = &cobra.Command{
-	Use:   "sclog",
-	Short: "Pass a valid file w/ the path to start the analysis.",
-	Long: `The sclog command will read in the specified file line-by-line.
-Use a full or relative path when specifying a file.`,
+	Use:   "read",
+	Short: "Pass a valid file with the path to start the analysis.",
+	Long:  `Will read in the specified file line-by-line and output information about the Sauce Connect Tunnel. Use a full or relative path when specifying a file.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		logger.SetupLogfile()
 		if validArgs(args) != true {
