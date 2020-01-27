@@ -29,7 +29,9 @@ func ReadLog(sclog string, verbose bool) {
 		line := scanner.Bytes()
 		if launchArgs(line) {
 			a := strings.Split(string(line), " ")
-			args = strings.Join(a[3:], " ")
+			if len(a) >= 3 {
+				args = strings.Join(a[3:], " ")
+			}
 		}
 		if isProblem, problem := problem(line); isProblem == true {
 			// if this is a known problem add it to the problemsdata if it isn't present
